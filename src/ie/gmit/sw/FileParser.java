@@ -9,8 +9,7 @@ public class FileParser {
 	private Map<String, Integer> wordMap = new HashMap<String, Integer>();
 	private StopWordsMap s = new StopWordsMap();
 	// Saves top 20 highest occuring word frequencies
-	private List<Integer> highestFrequencies = new ArrayList<Integer>();
-	private Map<String, Integer> cloudMap = new HashMap<String, Integer>();
+//	private Map<String, Integer> cloudMap = new HashMap<String, Integer>();
 
 	public FileParser(String fileName) throws Exception {
 		super();
@@ -43,7 +42,6 @@ public class FileParser {
 						frequency = wordMap.get(word);
 					}
 					frequency++;
-					
 					wordMap.put(word, frequency);
 				}
 			}
