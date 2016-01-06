@@ -41,6 +41,5 @@ public class StopWordsMap {
 			}
 		}
 		br.close();
-		System.out.println(set);
 	}
 }

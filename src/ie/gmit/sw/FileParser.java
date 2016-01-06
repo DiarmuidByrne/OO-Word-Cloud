@@ -17,8 +17,8 @@ public class FileParser {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private void parse(String file) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+	private Map<String, Integer> parse(String fileName) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
 		StringBuffer sb = new StringBuffer();
 		
 		int j;
@@ -49,11 +49,13 @@ public class FileParser {
 		for(String word : wordMap.keySet())  {
 			double score = getScore(word);
 			
-			System.out.println("word: " + word + " freq: " + wordMap.get(word) + " score " + score);
+			//System.out.println("word: " + word + " freq: " + wordMap.get(word) + " score " + score);
 			
 			// if (score > 0) {	}
 		}
-		br.close();		
+		br.close();
+		setWordMap(wordMap);
+		return wordMap;
 		//System.out.println(cloudMap.size() + " " + cloudMap);
 	}	
 	
@@ -65,10 +67,21 @@ public class FileParser {
 		
 		score = (freq+total)/total;
 		score = round(score, 6);
-		DecimalFormat f = new DecimalFormat("##.000000");
 		return score;
 	}
 
+
+	public Map<String, Integer> getWordMap() throws Exception {
+		return wordMap;
+	}
+	
+	public void newString(){
+		System.out.println("reached");
+	}
+
+	public void setWordMap(Map<String, Integer> wordMap) {
+		this.wordMap = wordMap;
+	}
 
 	private double round(double val, int places)
 	{
