@@ -20,9 +20,12 @@ a sample will be used. Collision detection is used in the project to prevent ove
 **References**
 In some parts of this project have been taken, altered and adapted from other projects and sources:
 
--Kumo word cloud 
+- Kumo word cloud 
 https://github.com/kennycason/kumo/
 Parts of the project structure has been used from Kumo, such as Word, WordCloud and the collision package. However, aside from the Vector2D class, the implementation of these classes and interfaces have been totally changed. 
 - RMI Encryption:
 https://github.com/DiarmuidByrne/RMI-Encryption
 Code from the QuadgramMap class has been used, namely the parse() method. However, it has been changed to save full words rather than quadgrams, and html pages in the urlparser class.
+- StackOverflow
+http://stackoverflow.com/questions/8119366/sorting-hashmap-by-values
+A code exerpt was taken from stackoverflow to sort a hashmap by values and add it to a linkedhashmap
