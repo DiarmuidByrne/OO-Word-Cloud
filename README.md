@@ -19,6 +19,7 @@ a sample will be used. Collision detection is used in the project to prevent ove
 
 **References**
 In some parts of this project have been taken, altered and adapted from other projects and sources:
+
 -Kumo word cloud 
 https://github.com/kennycason/kumo/
 Parts of the project structure has been used from Kumo, such as Word, WordCloud and the collision package. However, aside from the Vector2D class, the implementation of these classes and interfaces have been totally changed. 
