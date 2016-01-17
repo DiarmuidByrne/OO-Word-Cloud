@@ -18,6 +18,7 @@ name can all be customised by the user at runtime, or, if the user leaves the fi
 a sample will be used. Collision detection is used in the project to prevent overlap with words.
 
 **References**
+
 In some parts of this project have been taken, altered and adapted from other projects and sources:
 
 - Kumo word cloud 
