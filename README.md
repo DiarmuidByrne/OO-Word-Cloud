@@ -19,7 +19,7 @@ a sample will be used. Collision detection is used in the project to prevent ove
 
 **References**
 
-In some parts of this project have been taken, altered and adapted from other projects and sources:
+Some parts of this project have been taken, altered and adapted from other projects and sources:
 
 - Kumo word cloud 
 https://github.com/kennycason/kumo/
