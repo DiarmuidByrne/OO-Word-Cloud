@@ -10,7 +10,7 @@ and Stopwords.txt are in the same directory as wordie.jar
 - from command line, run the command:
 java -cp libs/*;wordie.jar ie.gmit.sw.runner.Runner
 
-
+Full javadocs can be found at dist/docs
 ![Alt text](http://i.imgur.com/V9SfUWj.png "Wordcloud from URL (www.gmit.ie)")
 
 This project is used to generate word cloud images using a given text file or URL.
