@@ -1,72 +1,82 @@
 package ie.gmit.sw.parse;
 
-import java.io.*;
-import java.net.*;
+import org.apache.commons.validator.routines.UrlValidator;
 import java.util.*;
+import org.jsoup.*;
+import org.jsoup.nodes.Document;
 
-public class URLParser implements Parsable{
+public class URLParser implements Parsable {
 	private HashMap<String, Integer> urlMap = new HashMap<String, Integer>();
-	private StopWordsMap s = new StopWordsMap();
+	private StopWordsMap s;
 	private Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
 	
-	public URLParser() throws Exception
-	{
+	/**
+	 * Constructor
+	 * Parses a URL using JSoup
+	 * @throws Exception if StopWords aren't initialized
+	 */
+	public URLParser() throws Exception {
 		super();
+		s = new StopWordsMap();
 	}
 	
-	public Map<String, Integer> parse(String urlString) throws Exception 
-	{
-		URL url = new URL(urlString);
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-        
-        StringBuffer sb = new StringBuffer();
+	/**
+	 * Uses JSoup to parse a URL and strip the 
+	 * html elements leaving just the plain text.
+	 * Each word is then compared to the stopwords 
+	 * HashSet and adds the word to a HashMap
+	 * @param urlString String the URL
+	 * @return sortedMap Map the sorted LinkedHashMap
+	 */
+	public Map<String, Integer> parse(String urlString) throws Exception  {
+		boolean isValid = validateURL(urlString);
 		
-		int j;
-		boolean ignore = false;
-		// Continue reading until end of file is reached
-		while((j = br.read()) != -1){
-			char next = (char)j;
+		if(isValid) {
+			Document doc = Jsoup.connect(urlString).get();
 			
-			if (next >= 'A' && next <= 'z' && !ignore){
-				sb.append(next);
-			} 
-			else if(next == '<')  ignore = true;
+			String plainText = doc.body().text();
 			
-			else if(next == '>') 	ignore = false;
+			// Add each word to array, ignoring whitespace and non-word characters
+			String[] words = plainText.split("\\W+|\\s|\\s+");
 			
-			else {
-				if(!ignore) {
-					String word = sb.toString().toUpperCase();
-					sb = new StringBuffer();
-					// Only add word to map if it isn't in stopwords HashSet
-					if (!s.compare(word) && word.length() > 0) {
-						int frequency = 0;
-						
-						if(urlMap.containsKey(word)){
-							frequency = urlMap.get(word);
-						}
-						frequency++;
-						if((word).length() > 1 && !word.contains("_")) {
-							urlMap.put(word, frequency);
-						}
+			// Continue reading until end of file is reached
+			for(String word : words) {
+				word = word.toUpperCase().trim();
+				// Only add word to map if it isn't in stopwords HashSet
+				if (!s.compare(word) && word.length() > 0) {
+					int frequency = 0;
+					if(urlMap.containsKey(word)){
+						frequency = urlMap.get(word);
+					}
+					frequency++;
+					if((word).length() > 1 && !word.contains("_")) {
+						urlMap.put(word, frequency);
 					}
 				}
 			}
+			sortedMap = new ParsableFactory().sortHashMapByValues(urlMap);
 		}
-		FileParser fp = new FileParser();
-		setSortedMap(fp.sortHashMapByValues(urlMap));
-		br.close();
 		
-		return sortedMap;		
+		return sortedMap;	
+	}
+	
+	/**
+	 * Validates a given url before it is parsed.
+	 * @param url String the URL String
+	 * @return boolean
+	 */
+	public boolean validateURL(String url) {
+		String[] schemes = {"http","https"}; // DEFAULT schemes = "http", "https", "ftp"
+		UrlValidator urlValidator = new UrlValidator(schemes);
+		if (urlValidator.isValid(url)) {
+		   return true;
+		}
+		
+		return false;
 	}
 
-	public Map<String, Integer> getMap()
-	{
+	public Map<String, Integer> getMap() {
 		return sortedMap;
 	}
 	
-	public void setSortedMap(Map<String, Integer> sortedMap) {
-		this.sortedMap = sortedMap;
-	}
-	}
+}

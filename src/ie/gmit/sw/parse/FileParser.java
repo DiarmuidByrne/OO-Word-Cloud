@@ -1,49 +1,37 @@
 package ie.gmit.sw.parse;
 
 
-import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 public class FileParser implements Parsable {
 	private Map<String, Integer> wordMap = new HashMap<String, Integer>();
-	private StopWordsMap s = new StopWordsMap();
+	private StopWordsMap s;
 	private Map<String, Integer> linkedMap = new LinkedHashMap<String, Integer>();
-	// Saves top 20 highest occuring word frequencies
-
+	
+	/**
+	 * Constructor
+	 * Parses a file and saves words to LinkedHashMap 
+	 * @throws Exception if stopwords map doesn't build successfully
+	 */
 	public FileParser() throws Exception {
 		super();
+		s = new StopWordsMap();
 	}
 	
+	/**
+	 * Parses a filename entered when the user runs the program.
+	 * If no extension is given, a default extension of .txt is used
+	 */
 	public Map<String, Integer> parse(String fileName) throws Exception {
+		fileName = validateExtension(fileName);
 		
-		String extension;
-		int i = fileName.lastIndexOf('.');
-		if (i > 0) {
-			extension = fileName.substring(i + 1);
-        } else {
-        	extension = ".txt";
-        	fileName+=extension;
-        }
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
-		StringBuffer sb = new StringBuffer();
-		
-		int j;
-		// Continue reading until end of file is reached
-		while((j = br.read()) != -1){
-			char next = (char)j;
-			
-			if (next >= 'A' && next <= 'z'){
-				sb.append(next);
-			}
-			
-			else {
-				String word = sb.toString().toUpperCase();
-				sb = new StringBuffer();
-				
-				// Only add word to map if it isn't in stopwords HashSet
-				if (!s.compare(word) && word.length() > 0) {
-					int frequency = 0;
+		for (String line : Files.readAllLines(Paths.get(fileName))) {
+		    for (String word : line.split("\\W|\\s+|\\s")) {
+		    	word = word.toUpperCase().trim();
+		    	
+		    	if(!s.compare(word)) {
+		    		int frequency = 0;
 					
 					if(wordMap.containsKey(word)){
 						frequency = wordMap.get(word);
@@ -52,47 +40,27 @@ public class FileParser implements Parsable {
 					if((word).length() > 1 && !word.contains("_")) {
 						wordMap.put(word, frequency);
 					}
-				}
-			}
+		    	}
+		    }
 		}
-		linkedMap = sortHashMapByValues(wordMap);
-		br.close();
+
+		linkedMap = new ParsableFactory().sortHashMapByValues(wordMap);
 		return linkedMap;
-	}
-	
-	// Sort hashmap by frequency in descending order
-	public LinkedHashMap<String, Integer> sortHashMapByValues(Map<String, Integer> wordMap) {
-	   List<String> mapKeys = new ArrayList<String>(wordMap.keySet());
-	   List<Integer> mapValues = new ArrayList<Integer>(wordMap.values());
-	   Collections.sort(mapValues, Collections.reverseOrder());
-	   Collections.sort(mapKeys, Collections.reverseOrder());
-
-	   LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
-
-	   Iterator<Integer> valueIt = mapValues.iterator();
-	   while (valueIt.hasNext()) {
-	       Object val = valueIt.next();
-	       Iterator<String> keyIt = mapKeys.iterator();
-
-	       while (keyIt.hasNext()) {
-	           Object key = keyIt.next();
-	           String comp1 = wordMap.get(key).toString();
-	           String comp2 = val.toString();
-
-	           if (comp1.equals(comp2)){
-	               wordMap.remove(key);
-	               mapKeys.remove(key);
-	               sortedMap.put((String)key, (int)val);
-	               break;
-	           }
-
-	       }
-
-	   }
-	   return sortedMap;
 	}
 	
 	public Map<String, Integer> getMap() {
 		return linkedMap;
+	}
+	
+	private String validateExtension(String fileName) {
+		String extension;
+		int i = fileName.lastIndexOf('.');
+		if (i > 0) {
+			extension = fileName.substring(i + 1);
+        } else {
+        	extension = ".txt";
+        	fileName+=extension;
+        }
+		return fileName;
 	}
 }

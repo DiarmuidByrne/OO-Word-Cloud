@@ -25,14 +25,17 @@
 	<property name="app.name" value="Word Cloud API"/>
 	<property name="app.version" value="1.0"/>
 	<property name="app.version.name" value="Scarab"/>
-	<property name="jre.target" value="1.7"/>
+	<property name="jre.target" value="1.8"/>
 	<property name="srcDir" value="./src/"/>
 	<property name="distDir" value="./dist"/>
+	<property name="libsDir" value="./libs"/>
 	<property name="docDir" value="${distDir}/docs"/>
-
+	
 	<path id="classpath">
-    	<pathelement location="."/>
-  	</path>
+	    <fileset dir="${libsDir}">
+	 	   <include name="*.jar"/>
+	   	</fileset>
+	</path>
   	
 	<echo>
 	    ----------------------------------------------------------------------------
@@ -58,9 +61,7 @@
     <target name="init" depends="clean">
 		<tstamp/>
     	<mkdir dir="${distDir}"/>
-
-
-	</target>	
+    </target>
 
     
 	<!-- Compile source code -->
@@ -73,7 +74,7 @@
 
 	<!-- Create Java application archive (Jar) -->
 	<target name="archive" depends="compile">
-        <jar destfile="${distDir}/wordcloud.jar" basedir="${distDir}" excludes="**/*Test.class, **/Compact*.class">         
+        <jar destfile="${distDir}/wordie.jar" basedir="${distDir}" excludes="**/*Test.class, **/Compact*.class">         
         	 <manifest>
         	 	<attribute name="Main-Class" value="ie.gmit.sw.Runner"/>
 				<attribute name="Built-By" value="${user.name}"/>
